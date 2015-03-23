@@ -83,11 +83,6 @@ public class NaiveLeaderElection implements Watcher {
     if (this.number.compareTo(leader) == 0) {
       this.isLeader = true;
       System.out.println("I'm leader");
-      try {
-        Thread.sleep(10000);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
     } else {
       System.out.println("I'm follower");
       this.isLeader = false;
@@ -139,8 +134,7 @@ public class NaiveLeaderElection implements Watcher {
     }
 
     try {
-      Thread.sleep(5000);
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < 8; i++) {
         Thread.sleep(1000);
         System.out.println("Leader does sth...");
       }

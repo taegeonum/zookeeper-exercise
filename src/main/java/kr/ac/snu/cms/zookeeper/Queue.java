@@ -100,12 +100,15 @@ import org.apache.zookeeper.data.Stat;
     }
   }
   
+  /*
+   * Two arguments: (producer or consumer, the number of elements)
+   */
   public static void main(String args[]) {
     Queue q = new Queue("localhost", "/app1");
     System.out.println("args: " + args);
     System.out.println("Input: " + args[0]);
     int i;
-    Integer max = new Integer(args[0]);
+    Integer max = new Integer(args[1]);
 
     if (args[1].equals("p")) {
       System.out.println("Producer");
