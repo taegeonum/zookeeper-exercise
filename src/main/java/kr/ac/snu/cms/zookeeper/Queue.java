@@ -81,11 +81,11 @@ import org.apache.zookeeper.data.Stat;
           System.out.println("Going to wait");
           mutex.wait();
         } else {
-          Integer min = new Integer(list.get(0).substring(7));
+          String min = list.get(0).substring(7);
           for(String s : list){
-            Integer tempValue = new Integer(s.substring(7));
+            String tempValue = s.substring(7);
             //System.out.println("Temporary value: " + tempValue);
-            if(tempValue < min) min = tempValue;
+            if(tempValue.compareTo(min) < -1) min = tempValue;
           }
           System.out.println("Temporary value: " + root + "/element" + min);
           byte[] b = zk.getData(root + "/element" + min,
@@ -110,7 +110,7 @@ import org.apache.zookeeper.data.Stat;
     int i;
     Integer max = new Integer(args[1]);
 
-    if (args[1].equals("p")) {
+    if (args[0].equals("p")) {
       System.out.println("Producer");
       for (i = 0; i < max; i++)
         try{
