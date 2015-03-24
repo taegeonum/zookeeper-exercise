@@ -93,7 +93,7 @@ public class NaiveLeaderElection implements Watcher {
   private void watchLeader(String root, String leader) {
     try {
       /* 6. Add watcher to the leader node */
-      zk.exists(leader, true);
+      zk.exists(root + "/" + leader, true);
     } catch (KeeperException e) {
       e.printStackTrace();
     } catch (InterruptedException e) {

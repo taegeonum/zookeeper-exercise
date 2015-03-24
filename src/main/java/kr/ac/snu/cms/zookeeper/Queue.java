@@ -56,7 +56,7 @@ import org.apache.zookeeper.data.Stat;
     value = b.array();
     
     /* 1. Create ?? node */
-    zk.
+    zk.create(root + "/element", value, Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL);
 
     return true;
   }
@@ -85,7 +85,7 @@ import org.apache.zookeeper.data.Stat;
           for(String s : list){
             String tempValue = s.substring(7);
             //System.out.println("Temporary value: " + tempValue);
-            if(tempValue.compareTo(min) < -1) min = tempValue;
+            if(tempValue.compareTo(min) < 0) min = tempValue;
           }
           System.out.println("Temporary value: " + root + "/element" + min);
           byte[] b = zk.getData(root + "/element" + min,

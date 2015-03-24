@@ -31,7 +31,7 @@ public class Barrier extends SyncPrimitive {
         Stat s = zk.exists(root, false);
         if (s == null) {
           /* 1. Create  persistent barrier node */ 
-          zk.
+          zk.create(root, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         }
       } catch (KeeperException e) {
         System.out
@@ -60,11 +60,11 @@ public class Barrier extends SyncPrimitive {
 
   boolean enter() throws KeeperException, InterruptedException{
     /* 2. Create **** child node */
-    zk.
+    name = zk.create(root + "/child", new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
     
     while (true) {
       synchronized (mutex) {
-        List<String> list = zk.getChildren(root, /* true or false? */);
+        List<String> list = zk.getChildren(root, true);
 
         /* waiting */
         if (list.size() < size) {
@@ -86,11 +86,11 @@ public class Barrier extends SyncPrimitive {
 
   boolean leave() throws KeeperException, InterruptedException{
     /* 3. ?? */ 
-    
+    zk.delete(name, 0);
     while (true) {
       /* waiting */
       synchronized (mutex) {
-        List<String> list = zk.getChildren(root, /* true of false? */);
+        List<String> list = zk.getChildren(root, true);
         if (list.size() > 0) {
           mutex.wait();
         } else {
