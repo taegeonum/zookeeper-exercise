@@ -1,7 +1,6 @@
 package kr.ac.snu.cms.zookeeper;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.zookeeper.CreateMode;
@@ -31,7 +30,7 @@ public class NaiveLeaderElection implements Watcher {
     try {
       System.out.println("Starting ZK:");
       /* 1. Create ZooKeeper client and set watcher to this */
-      this.zk = ;
+      this.zk = new ZooKeeper(address, 2000, this);
       System.out.println("Finished starting ZK: " + zk);
     } catch (IOException e) {
       System.out.println(e.toString());
@@ -42,10 +41,10 @@ public class NaiveLeaderElection implements Watcher {
     if (zk != null) {
       try {
         /* 2. Check root node exists */ 
-        Stat s = ;
+        Stat s = zk.exists(root, false);
         if (s == null) {
           /* 3. Create persistent root node */ 
-          zk.
+          zk.create(root, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         }
       } catch (KeeperException e) {
         System.out
@@ -57,7 +56,7 @@ public class NaiveLeaderElection implements Watcher {
     }
     
     /* 4. Create ephemeral sequential node to the root node. */ 
-    String actualPath = zk.create(/* TODO */, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
+    String actualPath = zk.create(root + "/child", new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
     
     /* Get my sequence number */ 
     String[] splited = actualPath.split("/");
@@ -71,7 +70,7 @@ public class NaiveLeaderElection implements Watcher {
     List<String> childrens = null;
     try {
       /* 5. get children of the root node */
-      childrens = 
+      childrens = zk.getChildren(root, false);
     } catch (KeeperException | InterruptedException e) {
       e.printStackTrace();
       throw new RuntimeException(e);
@@ -94,7 +93,7 @@ public class NaiveLeaderElection implements Watcher {
   private void watchLeader(String root, String leader) {
     try {
       /* 6. Add watcher to the leader node */
-      
+      zk.exists(leader, true);
     } catch (KeeperException e) {
       e.printStackTrace();
     } catch (InterruptedException e) {
